@@ -8,6 +8,7 @@ import LawAssistant from "@/components/LawAssistant";
 import ConstructionInsurance from "@/components/ConstructionInsurance";
 import CivilLiability from "@/components/CivilLiability";
 import LawReference from "@/components/LawReference";
+import ImplementationDecree from "@/components/ImplementationDecree";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -37,7 +38,7 @@ const Index = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 bg-card shadow-sm">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 bg-card shadow-sm">
             <TabsTrigger value="overview" className="flex items-center space-x-2">
               <BookOpen className="h-4 w-4" />
               <span className="hidden sm:inline">Vue d'ensemble</span>
@@ -53,6 +54,10 @@ const Index = () => {
             <TabsTrigger value="rcd" className="flex items-center space-x-2">
               <Shield className="h-4 w-4" />
               <span className="hidden sm:inline">RC Décennale</span>
+            </TabsTrigger>
+            <TabsTrigger value="decree" className="flex items-center space-x-2">
+              <FileText className="h-4 w-4" />
+              <span className="hidden sm:inline">Arrêté</span>
             </TabsTrigger>
             <TabsTrigger value="reference" className="flex items-center space-x-2">
               <FileText className="h-4 w-4" />
@@ -188,7 +193,7 @@ const Index = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
                   <Button 
                     variant="outline" 
                     className="h-20 flex-col space-y-2"
@@ -216,6 +221,14 @@ const Index = () => {
                   <Button 
                     variant="outline" 
                     className="h-20 flex-col space-y-2"
+                    onClick={() => setActiveTab("decree")}
+                  >
+                    <FileText className="h-6 w-6" />
+                    <span>Arrêté application</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="h-20 flex-col space-y-2"
                     onClick={() => setActiveTab("reference")}
                   >
                     <FileText className="h-6 w-6" />
@@ -236,6 +249,10 @@ const Index = () => {
 
           <TabsContent value="rcd">
             <CivilLiability />
+          </TabsContent>
+
+          <TabsContent value="decree">
+            <ImplementationDecree />
           </TabsContent>
 
           <TabsContent value="reference">

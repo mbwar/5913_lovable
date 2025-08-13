@@ -15,6 +15,14 @@ interface EvaluationResult {
   reason: string;
   articles: string[];
   warnings: string[];
+  amounts: {
+    trcMinAmount: number;
+    trcMaxAmount: number;
+    rcdMinAmount: number;
+    rcdMaxAmount: number;
+    rcChantierTiers: number;
+    rcChantierOuvrage: number;
+  } | null;
 }
 
 const LawAssistant = () => {
@@ -24,13 +32,42 @@ const LawAssistant = () => {
   const [commercialArea, setCommercialArea] = useState("");
   const [isStateProject, setIsStateProject] = useState(false);
   const [isInfrastructure, setIsInfrastructure] = useState(false);
+  const [workValue, setWorkValue] = useState("");
   const [isModification, setIsModification] = useState(false);
+
   const [result, setResult] = useState<EvaluationResult | null>(null);
+
+  const calculateInsuranceAmounts = (workValueNum: number) => {
+    // Calculs selon l'arrêté 3201-24
+    
+    // TRC - Garantie dommages ouvrage (Article 2)
+    const trcMinAmount = workValueNum < 500000000 ? workValueNum : 500000000;
+    const trcMaxAmount = trcMinAmount; // Pas de maximum spécifié au-delà du plafond
+    
+    // RC Décennale (Article 7) - même logique que TRC
+    const rcdMinAmount = workValueNum < 500000000 ? workValueNum : 500000000;
+    const rcdMaxAmount = rcdMinAmount;
+    
+    // RC Chantier (Article 4)
+    const rcChantierTiersBase = workValueNum * 0.5; // 50% du montant des travaux
+    const rcChantierTiers = Math.max(4000000, Math.min(40000000, rcChantierTiersBase));
+    const rcChantierOuvrage = 4000000; // Fixe à 4M DH
+    
+    return {
+      trcMinAmount,
+      trcMaxAmount,
+      rcdMinAmount,
+      rcdMaxAmount,
+      rcChantierTiers,
+      rcChantierOuvrage
+    };
+  };
 
   const evaluateProject = () => {
     const floorsNum = parseInt(floors) || 0;
     const totalAreaNum = parseInt(totalArea) || 0;
     const commercialAreaNum = parseInt(commercialArea) || 0;
+    const workValueNum = parseInt(workValue) || 0;
 
     // Initialize result
     const evaluation: EvaluationResult = {
@@ -39,7 +76,8 @@ const LawAssistant = () => {
       requiresRCD: false,
       reason: "",
       articles: [],
-      warnings: []
+      warnings: [],
+      amounts: null
     };
 
     // Check exclusions first (Article 157-19)
@@ -96,6 +134,11 @@ const LawAssistant = () => {
     if (isSubject) {
       evaluation.reason = "Projet assujetti à la loi 59-13 : Les critères d'application sont remplis";
       
+      // Calculate insurance amounts if work value is provided
+      if (workValueNum > 0) {
+        evaluation.amounts = calculateInsuranceAmounts(workValueNum);
+      }
+      
       // Add specific warnings
       if (floorsNum >= 5) {
         evaluation.warnings.push("Attention : Bâtiment ≥ 5 étages - Étude de mitoyenneté requise (Article 157-4)");
@@ -103,6 +146,10 @@ const LawAssistant = () => {
       
       if (totalAreaNum > 10000) {
         evaluation.warnings.push("Attention : Superficie importante - Vérifier les plafonds de garantie minimums");
+      }
+      
+      if (workValueNum >= 500000000) {
+        evaluation.warnings.push("Attention : Montant ≥ 500M DH - Plafond plafonné selon arrêté 3201-24");
       }
     } else {
       evaluation.reason = "Projet non assujetti : Ne remplit pas les critères d'application de la loi 59-13";
@@ -116,6 +163,7 @@ const LawAssistant = () => {
     setFloors("");
     setTotalArea("");
     setCommercialArea("");
+    setWorkValue("");
     setIsStateProject(false);
     setIsInfrastructure(false);
     setIsModification(false);
@@ -204,6 +252,20 @@ const LawAssistant = () => {
                   />
                 </div>
               )}
+
+              <div>
+                <Label htmlFor="workValue">Montant des travaux (DH) - Optionnel</Label>
+                <Input
+                  id="workValue"
+                  type="number"
+                  value={workValue}
+                  onChange={(e) => setWorkValue(e.target.value)}
+                  placeholder="ex: 15000000"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Permet de calculer les montants de garantie selon l'arrêté 3201-24
+                </p>
+              </div>
 
               <div className="space-y-3">
                 <Label>Exclusions potentielles</Label>
@@ -310,7 +372,31 @@ const LawAssistant = () => {
                     </Badge>
                   ))}
                 </div>
-              </div>
+                </div>
+
+              {result.amounts && (
+                <div className="space-y-3">
+                  <h4 className="font-medium text-primary">Montants de garantie calculés :</h4>
+                  <div className="grid grid-cols-1 gap-3 text-sm">
+                    <div className="bg-primary/10 p-3 rounded">
+                      <div className="font-medium mb-1">TRC - Dommages Ouvrage</div>
+                      <div>{result.amounts.trcMinAmount.toLocaleString()} DH</div>
+                    </div>
+                    <div className="bg-accent/10 p-3 rounded">
+                      <div className="font-medium mb-1">RC Chantier</div>
+                      <div>Tiers: {result.amounts.rcChantierTiers.toLocaleString()} DH</div>
+                      <div>Ouvrage: {result.amounts.rcChantierOuvrage.toLocaleString()} DH</div>
+                    </div>
+                    <div className="bg-success/10 p-3 rounded">
+                      <div className="font-medium mb-1">RC Décennale</div>
+                      <div>{result.amounts.rcdMinAmount.toLocaleString()} DH</div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Montants calculés selon l'arrêté 3201-24 du 20/12/2024
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
