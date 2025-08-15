@@ -9,6 +9,7 @@ import ConstructionInsurance from "@/components/ConstructionInsurance";
 import CivilLiability from "@/components/CivilLiability";
 import LawReference from "@/components/LawReference";
 import ImplementationDecree from "@/components/ImplementationDecree";
+import { GeneralConditions } from "@/components/GeneralConditions";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -38,7 +39,7 @@ const Index = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 bg-card shadow-sm">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-7 bg-card shadow-sm">
             <TabsTrigger value="overview" className="flex items-center space-x-2">
               <BookOpen className="h-4 w-4" />
               <span className="hidden sm:inline">Vue d'ensemble</span>
@@ -58,6 +59,10 @@ const Index = () => {
             <TabsTrigger value="decree" className="flex items-center space-x-2">
               <FileText className="h-4 w-4" />
               <span className="hidden sm:inline">Arrêté</span>
+            </TabsTrigger>
+            <TabsTrigger value="conditions" className="flex items-center space-x-2">
+              <FileText className="h-4 w-4" />
+              <span className="hidden sm:inline">Conditions</span>
             </TabsTrigger>
             <TabsTrigger value="reference" className="flex items-center space-x-2">
               <FileText className="h-4 w-4" />
@@ -253,6 +258,10 @@ const Index = () => {
 
           <TabsContent value="decree">
             <ImplementationDecree />
+          </TabsContent>
+
+          <TabsContent value="conditions">
+            <GeneralConditions />
           </TabsContent>
 
           <TabsContent value="reference">
