@@ -12,6 +12,7 @@ import ImplementationDecree from "@/components/ImplementationDecree";
 import { GeneralConditions } from "@/components/GeneralConditions";
 
 const Index = () => {
+  console.log("Index component is loading...");
   const [activeTab, setActiveTab] = useState("overview");
 
   return (
