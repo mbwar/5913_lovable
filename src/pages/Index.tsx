@@ -6,13 +6,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Building2, Shield, Calculator, BookOpen, FileText, CheckCircle2, AlertTriangle, Scale } from "lucide-react";
 import LawAssistant from "@/components/LawAssistant";
 import ConstructionInsurance from "@/components/ConstructionInsurance";
-import CivilLiability from "@/components/CivilLiability";
 import LawReference from "@/components/LawReference";
 import ImplementationDecree from "@/components/ImplementationDecree";
 import { GeneralConditions } from "@/components/GeneralConditions";
 
 const Index = () => {
-  console.log("Index component is loading...");
   const [activeTab, setActiveTab] = useState("overview");
 
   return (

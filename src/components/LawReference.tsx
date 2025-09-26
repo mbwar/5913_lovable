@@ -4,6 +4,37 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FileText, Scale, Book, AlertTriangle, FileCheck } from "lucide-react";
+import {
+  trcArticles,
+  rcdArticles,
+  commonArticles,
+  summaryColumns,
+  type ArticleDefinition,
+  type SummaryColumnDefinition,
+} from "@/content/law-reference";
+
+const renderArticles = (articles: ArticleDefinition[]) => (
+  <Accordion type="single" collapsible className="w-full">
+    {articles.map((article) => (
+      <AccordionItem key={article.id} value={article.id}>
+        <AccordionTrigger className="text-left">
+          <div className="flex items-center space-x-2">
+            <Badge variant={article.badgeVariant ?? "outline"} className={article.badgeClassName}>
+              {article.badgeText}
+            </Badge>
+            <span>{article.title}</span>
+          </div>
+        </AccordionTrigger>
+        <AccordionContent>{article.content}</AccordionContent>
+      </AccordionItem>
+    ))}
+  </Accordion>
+);
+
+const summaryIconMap: Record<SummaryColumnDefinition["icon"], typeof AlertTriangle> = {
+  AlertTriangle,
+  FileCheck,
+};
 
 const LawReference = () => {
   return (
