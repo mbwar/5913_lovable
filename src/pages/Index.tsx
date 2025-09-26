@@ -275,7 +275,7 @@ const Index = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="text-center text-sm text-muted-foreground">
             <p>Assistant Loi 59-13 - Outil pédagogique pour les assurances construction au Maroc</p>
-            <p className="mt-1">Développé pour faciliter l'application quotidienne de la réglementation</p>
+            <p className="mt-1">Développé par Mr Mustapha EL BOUKHARI pour faciliter l'application quotidienne de la réglementation</p>
           </div>
         </div>
       </footer>
