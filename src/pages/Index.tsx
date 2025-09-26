@@ -9,6 +9,7 @@ import ConstructionInsurance from "@/components/ConstructionInsurance";
 import LawReference from "@/components/LawReference";
 import ImplementationDecree from "@/components/ImplementationDecree";
 import { GeneralConditions } from "@/components/GeneralConditions";
+import CivilLiability from "@/components/CivilLiability";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("overview");
